@@ -11,11 +11,17 @@
 		<!-- Madár -->
 		<Image Name="flappyBird" Height="50" Width="50" Source="images/flappyBird.png" Canvas.Left="50" Canvas.Top="200"/>
 
-		<!-- Csövek képként -->
+		<!-- Csövek képként, azonos méretű párok -->
 		<Image Name="pipeTop1" Width="60" Height="150" Source="images/pipeTop.png" Canvas.Left="400" Canvas.Top="0"/>
-		<Image Name="pipeBottom1" Width="60" Height="200" Source="images/pipeBottom.png" Canvas.Left="400" Canvas.Top="300"/>
+		<Image Name="pipeBottom1" Width="60" Height="150" Source="images/pipeBottom.png" Canvas.Left="400" Canvas.Top="300"/>
 
-		<Image Name="pipeTop2" Width="60" Height="100" Source="images/pipeTop.png" Canvas.Left="650" Canvas.Top="0"/>
-		<Image Name="pipeBottom2" Width="60" Height="250" Source="images/pipeBottom.png" Canvas.Left="650" Canvas.Top="240"/>
+		<Image Name="pipeTop2" Width="60" Height="150" Source="images/pipeTop.png" Canvas.Left="650" Canvas.Top="0"/>
+		<Image Name="pipeBottom2" Width="60" Height="150" Source="images/pipeBottom.png" Canvas.Left="650" Canvas.Top="300"/>
+
+		<Image Name="pipeTop3" Width="60" Height="150" Source="images/pipeTop.png" Canvas.Left="900" Canvas.Top="0"/>
+		<Image Name="pipeBottom3" Width="60" Height="150" Source="images/pipeBottom.png" Canvas.Left="900" Canvas.Top="300"/>
+
+		<!-- Restart gomb -->
+		<Button Name="restartButton" Content="Restart" Width="100" Height="40" Canvas.Left="350" Canvas.Top="200" Visibility="Hidden" Click="RestartButton_Click"/>
 	</Canvas>
 </Window>
