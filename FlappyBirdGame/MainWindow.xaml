@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FlappyBirdGame"
         mc:Ignorable="d"
         Title="Flappy Bird: The Last Pigeon" Height="490" Width="800">
-	<Canvas Name="MyCanvas" Focusable="True" Background="DarkBlue">
+	<Canvas Name="MyCanvas" Focusable="True" KeyDown="KeyIsDown" KeyUp="KeyIsUp" Background="DarkBlue">
 		<Image Height="145" Width="207" Source="images/clouds.png" Canvas.Left="20" Canvas.Top="10" Tag="clouds"/>
 		<Image Height="145" Width="207" Source="images/clouds2.png" Canvas.Left="300" Canvas.Top="96" Tag="clouds"/>
 		<Image Height="389" Width="75" Source="images/pipeBottom.png"  Canvas.Left="107" Canvas.Top="283" Tag="obs1"/>

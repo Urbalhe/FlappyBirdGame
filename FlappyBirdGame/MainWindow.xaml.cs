@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Windows.Threading;
+
 namespace FlappyBirdGame
 {
     /// <summary>
@@ -16,9 +18,46 @@ namespace FlappyBirdGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+
+        DispatcherTimer gameTimer = new DispatcherTimer();
+
+        double score;
+        int gravity = 8;
+        bool gameOver;
+        Rect flappyBirdHitBox;
+
+		public MainWindow()
         {
             InitializeComponent();
+
+            gameTimer.Tick += MainEventTimer;
+            gameTimer.Interval = TimeSpan.FromMilliseconds(20);
+            StartGame();
+		}
+
+		private void MainEventTimer(object? sender, EventArgs e)
+		{
+			throw new NotImplementedException();  //Show potential fixes-ek jött létre
+		}
+
+		private void KeyIsDown(object sender, KeyEventArgs e)
+		{
+
+		}
+
+		private void KeyIsUp(object sender, KeyEventArgs e)
+		{
+
+		}
+
+        private void StartGame()
+        {
+
         }
-    }
+
+        private void EndGame()
+        {
+
+        }
+	}
 }
