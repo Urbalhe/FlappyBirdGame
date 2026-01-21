@@ -4,44 +4,21 @@
         xmlns:wpfAnimatedGif="http://wpfanimatedgif.codeplex.com"
         Title="Flappy Bird" Height="490" Width="800"
         Loaded="Window_Loaded">
-
 	<Grid>
-		<!-- GIF háttér -->
 		<Image x:Name="backgroundGif" Stretch="Fill"/>
-		<!-- A GIF forrását a C# kódban állítjuk be (Window_Loaded) -->
-
-		<!-- Játék Canvas -->
 		<Canvas Name="MyCanvas" Focusable="True" KeyDown="KeyIsDown">
-			<Label Name="scoreText" FontSize="20" Content="Score: 0" Canvas.Left="10" Canvas.Top="10"/>
-
+			<Label Name="scoreText" FontSize="20" Content="Score: 0" Canvas.Left="10" Canvas.Top="10" Foreground="AntiqueWhite"/>
+			<Label Name="highScoreText" FontSize="20" Content="High Score: 0" Canvas.Left="650" Canvas.Top="10" Foreground="AntiqueWhite"/>
 			<Image Name="flappyBird" Height="54" Width="58" Source="images/flappyBird.png" Canvas.Left="49" Canvas.Top="235"/>
-
-			<Image Name="pipeTop1" Width="60" Height="361" Source="images/pipeTop.png" Canvas.Left="210" Canvas.Top="-167" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-			<Image Name="pipeBottom1" Width="58" Height="376" Source="images/pipeBottom.png" Canvas.Left="210" Canvas.Top="331" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-				<Image.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform AngleY="2.555"/>
-						<RotateTransform/>
-						<TranslateTransform Y="1.316"/>
-					</TransformGroup>
-				</Image.RenderTransform>
-			</Image>
-
-			<Image Name="pipeTop2" Width="74" Height="378" Source="images/pipeTop.png" Canvas.Left="424" Canvas.Top="-242" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-			<Image Name="pipeBottom2" Width="55" Height="345" Source="images/pipeBottom.png" Canvas.Left="429" Canvas.Top="265" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
-			<Image Name="pipeTop3" Width="62" Height="383" Source="images/pipeTop.png" Canvas.Left="645" Canvas.Top="-178" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-			<Image Name="pipeBottom3" Width="55" Height="335" Source="images/pipeBottom.png" Canvas.Left="652" Canvas.Top="353" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-			<!-- Restart gomb -->
+			<Image Name="pipeTop1" Width="60" Height="361" Source="images/pipeTop.png" Canvas.Left="210" Canvas.Top="-167"/>
+			<Image Name="pipeBottom1" Width="58" Height="376" Source="images/pipeBottom.png" Canvas.Left="210" Canvas.Top="331"/>
+			<Image Name="pipeTop2" Width="74" Height="378" Source="images/pipeTop.png" Canvas.Left="424" Canvas.Top="-242"/>
+			<Image Name="pipeBottom2" Width="55" Height="345" Source="images/pipeBottom.png" Canvas.Left="429" Canvas.Top="265"/>
+			<Image Name="pipeTop3" Width="62" Height="383" Source="images/pipeTop.png" Canvas.Left="645" Canvas.Top="-178"/>
+			<Image Name="pipeBottom3" Width="55" Height="335" Source="images/pipeBottom.png" Canvas.Left="652" Canvas.Top="353"/>
 			<Button Name="restartButton" Content="Restart" Width="100" Height="40" Canvas.Left="350" Canvas.Top="200" Visibility="Hidden" Click="RestartButton_Click"/>
-			<Image x:Name="pipeBottom4" Width="55" Height="335" Source="/Images/pipeBottom.png" Canvas.Left="884" Canvas.Top="257" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-			<Image x:Name="pipeTop4" Width="62" Height="383" Source="/Images/pipeTop.png" Canvas.Left="877" Canvas.Top="-262" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-			<Image x:Name="pipeBottom5" Width="55" Height="335" Source="/Images/pipeBottom.png" Canvas.Left="1092" Canvas.Top="257" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-			<Image x:Name="pipeTop5" Width="62" Height="383" Source="/Images/pipeTop.png" Canvas.Left="1085" Canvas.Top="-262" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-			<Rectangle Height="64" Stroke="Black" Fill="Black" Width="1236" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="-56"/>
-			<Rectangle Height="64" Stroke="Black" Width="1236" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="460" Fill="Black"/>
+			<Rectangle Height="64" Stroke="Black" Fill="Black" Width="1236" Canvas.Top="-56"/>
+			<Rectangle Height="64" Stroke="Black" Fill="Black" Width="1236" Canvas.Top="460"/>
 		</Canvas>
 	</Grid>
 </Window>
