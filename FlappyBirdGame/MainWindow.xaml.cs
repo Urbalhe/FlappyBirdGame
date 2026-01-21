@@ -46,8 +46,11 @@ namespace FlappyBirdGame
 			fogOverlay.Visibility = Visibility.Hidden;
 			Canvas.SetLeft(fogOverlay, 0);
 			Canvas.SetTop(fogOverlay, 0);
-			Panel.SetZIndex(fogOverlay, 15);
+			Panel.SetZIndex(fogOverlay, 10);
 			MyCanvas.Children.Add(fogOverlay);
+
+			Panel.SetZIndex(restartButton, 20);
+			Panel.SetZIndex(BackToMenuButton, 20);
 
 			UpdateHighScoreText();
 		}
@@ -66,6 +69,7 @@ namespace FlappyBirdGame
 			rainDrops.Clear();
 			fogOverlay.Visibility = Visibility.Hidden;
 			gameSpeed = 5;
+
 			Canvas.SetTop(flappyBird, 200);
 			Canvas.SetLeft(flappyBird, 50);
 			birdSpeed = 0;
@@ -80,7 +84,7 @@ namespace FlappyBirdGame
 			Canvas.SetLeft(pipeBottom3, 900);
 
 			score = 0;
-			scoreText.Content = "Score: 0";
+			scoreText.Content = "Pont: 0";
 
 			pipeTop1.Tag = null;
 			pipeTop2.Tag = null;
@@ -88,6 +92,9 @@ namespace FlappyBirdGame
 
 			restartButton.Visibility = Visibility.Hidden;
 			BackToMenuButton.Visibility = Visibility.Hidden;
+
+			Panel.SetZIndex(restartButton, 20);
+			Panel.SetZIndex(BackToMenuButton, 20);
 
 			gameTimer.Start();
 		}
