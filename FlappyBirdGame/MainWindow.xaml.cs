@@ -54,9 +54,41 @@ namespace FlappyBirdGame
 
 		private void StartButton_Click(object sender, RoutedEventArgs e)
 		{
+			StartGame();
+		}
+
+		private void StartGame()
+		{
 			MenuGrid.Visibility = Visibility.Hidden;
 			MyCanvas.Visibility = Visibility.Visible;
 			MyCanvas.Focus();
+			gameOver = false;
+			rainDrops.Clear();
+			fogOverlay.Visibility = Visibility.Hidden;
+			gameSpeed = 5;
+			Canvas.SetTop(flappyBird, 200);
+			Canvas.SetLeft(flappyBird, 50);
+			birdSpeed = 0;
+			birdAngle = 0;
+			flappyBird.RenderTransform = new RotateTransform(0, flappyBird.Width / 2, flappyBird.Height / 2);
+
+			Canvas.SetLeft(pipeTop1, 400);
+			Canvas.SetLeft(pipeBottom1, 400);
+			Canvas.SetLeft(pipeTop2, 650);
+			Canvas.SetLeft(pipeBottom2, 650);
+			Canvas.SetLeft(pipeTop3, 900);
+			Canvas.SetLeft(pipeBottom3, 900);
+
+			score = 0;
+			scoreText.Content = "Score: 0";
+
+			pipeTop1.Tag = null;
+			pipeTop2.Tag = null;
+			pipeTop3.Tag = null;
+
+			restartButton.Visibility = Visibility.Hidden;
+			BackToMenuButton.Visibility = Visibility.Hidden;
+
 			gameTimer.Start();
 		}
 
@@ -83,19 +115,18 @@ namespace FlappyBirdGame
 				EndGame();
 			}
 
-			if (Canvas.GetTop(flappyBird) < 0 ||
-				Canvas.GetTop(flappyBird) + flappyBird.Height > MyCanvas.ActualHeight)
+			if (Canvas.GetTop(flappyBird) < 0 || Canvas.GetTop(flappyBird) + flappyBird.Height > MyCanvas.ActualHeight)
 			{
 				EndGame();
 			}
 
-			if (score % 5 == 0 && score != 0) gameSpeed = 5 + score / 5;
+			gameSpeed = 5 + score / 5;
 
-			if (score >= 20)
+			if (score >= 15)
 			{
 				StartRain();
 			}
-			if (score >= 30)
+			if (score >= 20)
 			{
 				fogOverlay.Visibility = Visibility.Visible;
 			}
@@ -110,12 +141,10 @@ namespace FlappyBirdGame
 			Canvas.SetLeft(top, left);
 			Canvas.SetLeft(bottom, left);
 
-			if (!gameOver &&
-				left + top.Width < Canvas.GetLeft(flappyBird) &&
-				top.Tag?.ToString() != "passed")
+			if (!gameOver && left + top.Width < Canvas.GetLeft(flappyBird) && top.Tag?.ToString() != "passed")
 			{
 				score++;
-				scoreText.Content = "Score: " + score;
+				scoreText.Content = "Pont: " + score;
 				top.Tag = "passed";
 				UpdateHighScoreText();
 			}
@@ -130,83 +159,35 @@ namespace FlappyBirdGame
 
 		private bool CheckCollision(Image pipe)
 		{
-			Rect birdRect = new Rect(
-				Canvas.GetLeft(flappyBird) + 8,
-				Canvas.GetTop(flappyBird) + 8,
-				flappyBird.Width - 16,
-				flappyBird.Height - 16
-			);
-
+			Rect birdRect = new Rect(Canvas.GetLeft(flappyBird) + 8, Canvas.GetTop(flappyBird) + 8, flappyBird.Width - 16, flappyBird.Height - 16);
 			double pipePaddingX = pipe.Width * 0.35;
-			double pipePaddingY = 0;
-
-			Rect pipeRect = new Rect(
-				Canvas.GetLeft(pipe) + pipePaddingX,
-				Canvas.GetTop(pipe) + pipePaddingY,
-				pipe.Width - (pipePaddingX * 2),
-				pipe.Height
-			);
-
+			Rect pipeRect = new Rect(Canvas.GetLeft(pipe) + pipePaddingX, Canvas.GetTop(pipe), pipe.Width - (pipePaddingX * 2), pipe.Height);
 			return birdRect.IntersectsWith(pipeRect);
 		}
 
 		private void EndGame()
 		{
 			if (gameOver) return;
-
 			gameOver = true;
 			gameTimer.Stop();
 			restartButton.Visibility = Visibility.Visible;
-
+			BackToMenuButton.Visibility = Visibility.Visible;
 			if (score > highScore) highScore = score;
 			UpdateHighScoreText();
 		}
 
 		private void RestartButton_Click(object sender, RoutedEventArgs e)
 		{
-			Canvas.SetTop(flappyBird, 200);
-			Canvas.SetLeft(flappyBird, 50);
-			birdSpeed = 0;
-			birdAngle = 0;
-			flappyBird.RenderTransform = new RotateTransform(0, flappyBird.Width / 2, flappyBird.Height / 2);
+			StartGame();
+		}
 
-			Canvas.SetLeft(pipeTop1, 400);
-			Canvas.SetLeft(pipeBottom1, 400);
-			Canvas.SetLeft(pipeTop2, 650);
-			Canvas.SetLeft(pipeBottom2, 650);
-			Canvas.SetLeft(pipeTop3, 900);
-			Canvas.SetLeft(pipeBottom3, 900);
-
-			score = 0;
-			scoreText.Content = "Score: 0";
-
-			pipeTop1.Tag = null;
-			pipeTop2.Tag = null;
-			pipeTop3.Tag = null;
-
-			gameSpeed = 5;
-			rainDrops.Clear();
-			fogOverlay.Visibility = Visibility.Hidden;
-
-			List<UIElement> toRemove = new List<UIElement>();
-			foreach (UIElement child in MyCanvas.Children)
-			{
-				if (child != backgroundGif && child != flappyBird && child != pipeTop1 && child != pipeBottom1 &&
-					child != pipeTop2 && child != pipeBottom2 && child != pipeTop3 && child != pipeBottom3 &&
-					child != scoreText && child != highScoreText && child != restartButton && child != fogOverlay)
-				{
-					toRemove.Add(child);
-				}
-			}
-			foreach (var child in toRemove)
-			{
-				MyCanvas.Children.Remove(child);
-			}
-
-			gameOver = false;
+		private void BackToMenuButton_Click(object sender, RoutedEventArgs e)
+		{
+			gameTimer.Stop();
+			MyCanvas.Visibility = Visibility.Hidden;
+			MenuGrid.Visibility = Visibility.Visible;
 			restartButton.Visibility = Visibility.Hidden;
-
-			gameTimer.Start();
+			BackToMenuButton.Visibility = Visibility.Hidden;
 		}
 
 		private void KeyIsDown(object sender, KeyEventArgs e)
@@ -255,7 +236,7 @@ namespace FlappyBirdGame
 
 		private void UpdateHighScoreText()
 		{
-			highScoreText.Content = "High Score: " + highScore;
+			highScoreText.Content = "Rekord: " + highScore;
 		}
 	}
 }

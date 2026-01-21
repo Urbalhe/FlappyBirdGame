@@ -16,14 +16,15 @@
 			<Image Name="pipeBottom2" Width="55" Height="345" Source="images/pipeBottom.png" Canvas.Left="429" Canvas.Top="265"/>
 			<Image Name="pipeTop3" Width="62" Height="383" Source="images/pipeTop.png" Canvas.Left="645" Canvas.Top="-178"/>
 			<Image Name="pipeBottom3" Width="55" Height="335" Source="images/pipeBottom.png" Canvas.Left="652" Canvas.Top="353"/>
-			<Button Name="restartButton" Content="Restart" Width="100" Height="40" Canvas.Left="350" Canvas.Top="200" Visibility="Hidden" Click="RestartButton_Click"/>
+			<Button Name="restartButton" Content="Újraindítás" Width="100" Height="40" Canvas.Left="280" Canvas.Top="200" Visibility="Hidden" Click="RestartButton_Click"/>
+			<Button Name="BackToMenuButton" Content="Vissza a menübe!" Width="150" Height="40" Canvas.Left="420" Canvas.Top="200" Visibility="Hidden" Click="BackToMenuButton_Click"/>
 			<Rectangle Height="64" Stroke="Black" Fill="Black" Width="1236" Canvas.Top="-56"/>
 			<Rectangle Height="64" Stroke="Black" Fill="Black" Width="1236" Canvas.Top="460"/>
 		</Canvas>
 		<Grid Name="MenuGrid">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 				<Label Content="Flappy Bird: Pigeon edition" FontSize="36" FontWeight="Bold" Foreground="AntiqueWhite" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-				<Button Name="StartButton" Content="Start Game" Width="200" Height="60" FontSize="20" Click="StartButton_Click"/>
+				<Button Name="StartButton" Content="Játék indítása!" Width="200" Height="60" FontSize="20" Click="StartButton_Click"/>
 			</StackPanel>
 		</Grid>
 	</Grid>
