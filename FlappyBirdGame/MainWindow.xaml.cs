@@ -37,9 +37,6 @@ namespace FlappyBirdGame
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			MyCanvas.Focus();
-			gameTimer.Start();
-
 			var bgImage = new BitmapImage(new Uri("Images/hatter.gif", UriKind.Relative));
 			ImageBehavior.SetAnimatedSource(backgroundGif, bgImage);
 
@@ -53,6 +50,14 @@ namespace FlappyBirdGame
 			MyCanvas.Children.Add(fogOverlay);
 
 			UpdateHighScoreText();
+		}
+
+		private void StartButton_Click(object sender, RoutedEventArgs e)
+		{
+			MenuGrid.Visibility = Visibility.Hidden;
+			MyCanvas.Visibility = Visibility.Visible;
+			MyCanvas.Focus();
+			gameTimer.Start();
 		}
 
 		private void GameLoop(object sender, EventArgs e)
@@ -183,10 +188,6 @@ namespace FlappyBirdGame
 			rainDrops.Clear();
 			fogOverlay.Visibility = Visibility.Hidden;
 
-			gameOver = false;
-			restartButton.Visibility = Visibility.Hidden;
-
-			// Csak a dinamikus elemeket töröljük (pl. eső)
 			List<UIElement> toRemove = new List<UIElement>();
 			foreach (UIElement child in MyCanvas.Children)
 			{
@@ -201,6 +202,9 @@ namespace FlappyBirdGame
 			{
 				MyCanvas.Children.Remove(child);
 			}
+
+			gameOver = false;
+			restartButton.Visibility = Visibility.Hidden;
 
 			gameTimer.Start();
 		}
