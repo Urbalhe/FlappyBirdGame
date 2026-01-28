@@ -205,9 +205,9 @@ namespace FlappyBirdGame
 			UpdateHighScoreText();
 
 			string message = "";
-			if (score < 5) message = "Még gyakorolj, próbáld újra!";
+			if (score < 5) message = "Még nem az igazi, próbáld újra!";
 			else if (score < 10) message = "Már alakul, próbáld újra!";
-			else if (score < 15) message = "Szépen haladsz, ez már szép teljesítmény!";
+			else if (score < 15) message = "Szépen haladsz, ez már jó teljesítmény!";
 			else message = "Készen állsz a galambbirodalom megalapítására.";
 
 			messageBg.Visibility = Visibility.Visible;
