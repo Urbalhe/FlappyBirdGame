@@ -13,20 +13,26 @@ namespace FlappyBirdGame
 {
 	public partial class MainWindow : Window
 	{
+		// timer ami meghivja a jateklopust
 		DispatcherTimer gameTimer = new DispatcherTimer();
+		// random generator a csovek es esohoz
 		Random rnd = new Random();
 
+		// fizika valtozok
 		double gravity = 1.5;
 		double birdSpeed = 0;
 		double gameSpeed = 5;
 		double birdAngle = 0;
 
+		// pontszam valtozok
 		int score = 0;
 		int highScore = 0;
 		bool gameOver = false;
 
+		// csovek kozti tavolsag
 		double pipeSpacing = 250;
 
+		// eso es egyeb overlay elemek
 		List<Line> rainDrops = new List<Line>();
 		Rectangle fogOverlay = new Rectangle();
 		Rectangle messageBg = new Rectangle();
@@ -35,15 +41,18 @@ namespace FlappyBirdGame
 		public MainWindow()
 		{
 			InitializeComponent();
+			// timer interval beallitasa
 			gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-			gameTimer.Tick += GameLoop;
+			gameTimer.Tick += GameLoop; // minden ticknel meghivjuk a jateklopust
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			// hatter gif betoltese
 			var bgImage = new BitmapImage(new Uri("Images/hatter.gif", UriKind.Relative));
 			ImageBehavior.SetAnimatedSource(backgroundGif, bgImage);
 
+			// fog overlay inicializalasa
 			fogOverlay.Width = MyCanvas.ActualWidth;
 			fogOverlay.Height = MyCanvas.ActualHeight;
 			fogOverlay.Fill = new SolidColorBrush(Color.FromArgb(100, 200, 200, 200));
@@ -53,6 +62,7 @@ namespace FlappyBirdGame
 			Panel.SetZIndex(fogOverlay, 10);
 			MyCanvas.Children.Add(fogOverlay);
 
+			// uzenet hatter beallitasa
 			messageBg.Width = MyCanvas.ActualWidth;
 			messageBg.Height = 50;
 			messageBg.Fill = Brushes.LightGray;
@@ -62,6 +72,7 @@ namespace FlappyBirdGame
 			Panel.SetZIndex(messageBg, 20);
 			MyCanvas.Children.Add(messageBg);
 
+			// vege uzenet inicializalasa
 			endGameMessage.FontSize = 24;
 			endGameMessage.FontWeight = FontWeights.Bold;
 			endGameMessage.Foreground = Brushes.Black;
@@ -73,33 +84,39 @@ namespace FlappyBirdGame
 			Panel.SetZIndex(endGameMessage, 21);
 			MyCanvas.Children.Add(endGameMessage);
 
+			// rekord szoveg frissitese
 			UpdateHighScoreText();
 		}
 
 		private void StartButton_Click(object sender, RoutedEventArgs e)
 		{
+			// jatek inditasa gombbal
 			StartGame();
 		}
 
 		private void StartGame()
 		{
+			// menu eltuntetese, canvas mutatasa
 			MenuGrid.Visibility = Visibility.Hidden;
 			MyCanvas.Visibility = Visibility.Visible;
 			MyCanvas.Focus();
 			gameOver = false;
 
+			// eso kikapcsolasa
 			StopRain();
 			fogOverlay.Visibility = Visibility.Hidden;
 			messageBg.Visibility = Visibility.Hidden;
 			endGameMessage.Visibility = Visibility.Hidden;
 			gameSpeed = 5;
 
+			// madar pozicio alaphelyzetbe
 			Canvas.SetTop(flappyBird, 200);
 			Canvas.SetLeft(flappyBird, 50);
 			birdSpeed = 0;
 			birdAngle = 0;
 			flappyBird.RenderTransform = new RotateTransform(0, flappyBird.Width / 2, flappyBird.Height / 2);
 
+			// csovek pozicio alaphelyzetbe
 			Canvas.SetLeft(pipeTop1, 500);
 			Canvas.SetLeft(pipeBottom1, 500);
 
@@ -109,35 +126,43 @@ namespace FlappyBirdGame
 			Canvas.SetLeft(pipeTop3, 500 + pipeSpacing * 2);
 			Canvas.SetLeft(pipeBottom3, 500 + pipeSpacing * 2);
 
+			// pontszam alapra
 			score = 0;
 			scoreText.Content = "Pont: 0";
 
+			// csovek tag torlese
 			pipeTop1.Tag = null;
 			pipeTop2.Tag = null;
 			pipeTop3.Tag = null;
 
+			// gombok elrejtese
 			restartButton.Visibility = Visibility.Hidden;
 			BackToMenuButton.Visibility = Visibility.Hidden;
 
+			
 			gameTimer.Start();
 		}
 
 		private void GameLoop(object sender, EventArgs e)
 		{
-			if (gameOver) return;
+			if (gameOver) return; 
 
+			// madar mozgatasa
 			Canvas.SetTop(flappyBird, Canvas.GetTop(flappyBird) + birdSpeed);
 			birdSpeed += gravity;
 
+			// madar forgatasa repuleshez
 			birdAngle += (birdSpeed > 0 ? 1 : -1);
 			if (birdAngle > 25) birdAngle = 25;
 			if (birdAngle < -25) birdAngle = -25;
 			flappyBird.RenderTransform = new RotateTransform(birdAngle, flappyBird.Width / 2, flappyBird.Height / 2);
 
+			// csovek mozgatasa
 			MovePipe(pipeTop1, pipeBottom1);
 			MovePipe(pipeTop2, pipeBottom2);
 			MovePipe(pipeTop3, pipeBottom3);
 
+			// utkozes ellenorzes
 			if (CheckCollision(pipeTop1) || CheckCollision(pipeBottom1) ||
 				CheckCollision(pipeTop2) || CheckCollision(pipeBottom2) ||
 				CheckCollision(pipeTop3) || CheckCollision(pipeBottom3))
@@ -145,26 +170,32 @@ namespace FlappyBirdGame
 				EndGame();
 			}
 
+			// hatarok ellenorzese
 			if (Canvas.GetTop(flappyBird) < 0 || Canvas.GetTop(flappyBird) + flappyBird.Height > MyCanvas.ActualHeight)
 			{
 				EndGame();
 			}
 
+			// jatek sebesseg noveles pontok alapjan
 			gameSpeed = 5 + score / 5;
 
+			// eso es fofog megjelenitese pontok alapjan
 			if (score >= 15) StartRain();
 			if (score >= 20) fogOverlay.Visibility = Visibility.Visible;
 
+			// eso animacio
 			AnimateRain();
 		}
 
 		private void MovePipe(Image top, Image bottom)
 		{
+			// csov mozgatasa balra
 			double left = Canvas.GetLeft(top) - gameSpeed;
 
 			Canvas.SetLeft(top, left);
 			Canvas.SetLeft(bottom, left);
 
+			// pont adasa ha a madar elhaladt
 			if (!gameOver && left + top.Width < Canvas.GetLeft(flappyBird) && top.Tag?.ToString() != "passed")
 			{
 				score++;
@@ -173,6 +204,7 @@ namespace FlappyBirdGame
 				UpdateHighScoreText();
 			}
 
+			// cso ujra pozicionalasa ha kijott a kepernyorol
 			if (left < -top.Width)
 			{
 				double maxX = Math.Max(
@@ -188,6 +220,7 @@ namespace FlappyBirdGame
 
 		private bool CheckCollision(Image pipe)
 		{
+			// madar es cso rectjeinek osszehasonlitasa
 			Rect birdRect = new Rect(Canvas.GetLeft(flappyBird) + 8, Canvas.GetTop(flappyBird) + 8, flappyBird.Width - 16, flappyBird.Height - 16);
 			double pad = pipe.Width * 0.35;
 			Rect pipeRect = new Rect(Canvas.GetLeft(pipe) + pad, Canvas.GetTop(pipe), pipe.Width - pad * 2, pipe.Height);
@@ -204,11 +237,12 @@ namespace FlappyBirdGame
 			if (score > highScore) highScore = score;
 			UpdateHighScoreText();
 
+			// uzenet valasztasa pontok alapjan
 			string message = "";
 			if (score < 5) message = "Még nem az igazi, próbáld újra!";
 			else if (score < 10) message = "Már alakul, próbáld újra!";
 			else if (score < 15) message = "Szépen haladsz, ez már jó teljesítmény!";
-			else message = "Készen állsz a galambbirodalom megalapítására.";
+			else message = "Készen állsz a galambbirodalom megalapitasara.";
 
 			messageBg.Visibility = Visibility.Visible;
 			endGameMessage.Text = message;
@@ -217,11 +251,13 @@ namespace FlappyBirdGame
 
 		private void RestartButton_Click(object sender, RoutedEventArgs e)
 		{
+			
 			StartGame();
 		}
 
 		private void BackToMenuButton_Click(object sender, RoutedEventArgs e)
 		{
+			
 			gameTimer.Stop();
 			MyCanvas.Visibility = Visibility.Hidden;
 			MenuGrid.Visibility = Visibility.Visible;
@@ -229,6 +265,7 @@ namespace FlappyBirdGame
 
 		private void KeyIsDown(object sender, KeyEventArgs e)
 		{
+			// space lenyomasa es repules
 			if (e.Key == Key.Space && !gameOver)
 			{
 				birdSpeed = -7;
@@ -238,6 +275,7 @@ namespace FlappyBirdGame
 
 		private void StartRain()
 		{
+			// eso letrehozasa ha meg nincs
 			if (rainDrops.Count > 0) return;
 
 			for (int i = 0; i < 100; i++)
@@ -259,6 +297,7 @@ namespace FlappyBirdGame
 
 		private void StopRain()
 		{
+			
 			foreach (var drop in rainDrops)
 				MyCanvas.Children.Remove(drop);
 
@@ -267,11 +306,13 @@ namespace FlappyBirdGame
 
 		private void AnimateRain()
 		{
+			// eso mozgatasa lefele
 			foreach (var drop in rainDrops)
 			{
 				drop.Y1 += 5;
 				drop.Y2 += 5;
 
+				// ha a drop lement, ujrainditasa felul
 				if (drop.Y1 > MyCanvas.ActualHeight)
 				{
 					drop.Y1 = 0;
@@ -284,6 +325,7 @@ namespace FlappyBirdGame
 
 		private void UpdateHighScoreText()
 		{
+			// rekord szoveg frissitese
 			highScoreText.Content = "Rekord: " + highScore;
 		}
 	}
