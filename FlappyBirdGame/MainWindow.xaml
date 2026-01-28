@@ -23,9 +23,10 @@
 		</Canvas>
 		<Grid Name="MenuGrid">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-				<Label Content="Flappy Bird: Pigeon edition" FontSize="36" FontWeight="Bold" Foreground="AntiqueWhite" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+				<Label Content="Flappy Bird: Pigeon Edition" FontSize="36" FontWeight="Bold" Foreground="AntiqueWhite" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 				<Button Name="StartButton" Content="Játék Indítása!" Width="200" Height="60" FontSize="20" Click="StartButton_Click"/>
 			</StackPanel>
+			<Label Content="Leírás: Juss át a madárral az akadályokon." HorizontalAlignment="Left" Height="58" Margin="540,428,0,0" VerticalAlignment="Top" Width="311" FontWeight="Bold" Foreground="AntiqueWhite"/>
 		</Grid>
 	</Grid>
 </Window>

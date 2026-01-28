@@ -7,7 +7,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
-using WpfAnimatedGif;
 
 namespace FlappyBirdGame
 {
@@ -25,8 +24,12 @@ namespace FlappyBirdGame
 		int highScore = 0;
 		bool gameOver = false;
 
+		double pipeSpacing = 250;
+
 		List<Line> rainDrops = new List<Line>();
 		Rectangle fogOverlay = new Rectangle();
+
+		string selectedBird = "Images/flappyBird.png";
 
 		public MainWindow()
 		{
@@ -35,24 +38,14 @@ namespace FlappyBirdGame
 			gameTimer.Tick += GameLoop;
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
+		private void Bird1Button_Click(object sender, RoutedEventArgs e)
 		{
-			var bgImage = new BitmapImage(new Uri("Images/hatter.gif", UriKind.Relative));
-			ImageBehavior.SetAnimatedSource(backgroundGif, bgImage);
+			selectedBird = "Images/flappyBird.png";
+		}
 
-			fogOverlay.Width = MyCanvas.ActualWidth;
-			fogOverlay.Height = MyCanvas.ActualHeight;
-			fogOverlay.Fill = new SolidColorBrush(Color.FromArgb(100, 200, 200, 200));
-			fogOverlay.Visibility = Visibility.Hidden;
-			Canvas.SetLeft(fogOverlay, 0);
-			Canvas.SetTop(fogOverlay, 0);
-			Panel.SetZIndex(fogOverlay, 10);
-			MyCanvas.Children.Add(fogOverlay);
-
-			Panel.SetZIndex(restartButton, 20);
-			Panel.SetZIndex(BackToMenuButton, 20);
-
-			UpdateHighScoreText();
+		private void Bird2Button_Click(object sender, RoutedEventArgs e)
+		{
+			selectedBird = "Images/madar.png";
 		}
 
 		private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -62,11 +55,13 @@ namespace FlappyBirdGame
 
 		private void StartGame()
 		{
+			flappyBird.Source = new BitmapImage(new Uri(selectedBird, UriKind.Relative));
+
 			MenuGrid.Visibility = Visibility.Hidden;
 			MyCanvas.Visibility = Visibility.Visible;
-			MyCanvas.Focus();
 			gameOver = false;
-			rainDrops.Clear();
+
+			StopRain();
 			fogOverlay.Visibility = Visibility.Hidden;
 			gameSpeed = 5;
 
@@ -76,12 +71,12 @@ namespace FlappyBirdGame
 			birdAngle = 0;
 			flappyBird.RenderTransform = new RotateTransform(0, flappyBird.Width / 2, flappyBird.Height / 2);
 
-			Canvas.SetLeft(pipeTop1, 400);
-			Canvas.SetLeft(pipeBottom1, 400);
-			Canvas.SetLeft(pipeTop2, 650);
-			Canvas.SetLeft(pipeBottom2, 650);
-			Canvas.SetLeft(pipeTop3, 900);
-			Canvas.SetLeft(pipeBottom3, 900);
+			Canvas.SetLeft(pipeTop1, 500);
+			Canvas.SetLeft(pipeBottom1, 500);
+			Canvas.SetLeft(pipeTop2, 500 + pipeSpacing);
+			Canvas.SetLeft(pipeBottom2, 500 + pipeSpacing);
+			Canvas.SetLeft(pipeTop3, 500 + pipeSpacing * 2);
+			Canvas.SetLeft(pipeBottom3, 500 + pipeSpacing * 2);
 
 			score = 0;
 			scoreText.Content = "Pont: 0";
@@ -92,9 +87,6 @@ namespace FlappyBirdGame
 
 			restartButton.Visibility = Visibility.Hidden;
 			BackToMenuButton.Visibility = Visibility.Hidden;
-
-			Panel.SetZIndex(restartButton, 20);
-			Panel.SetZIndex(BackToMenuButton, 20);
 
 			gameTimer.Start();
 		}
@@ -128,23 +120,11 @@ namespace FlappyBirdGame
 			}
 
 			gameSpeed = 5 + score / 5;
-
-			if (score >= 15)
-			{
-				StartRain();
-			}
-			if (score >= 20)
-			{
-				fogOverlay.Visibility = Visibility.Visible;
-			}
-
-			AnimateRain();
 		}
 
 		private void MovePipe(Image top, Image bottom)
 		{
 			double left = Canvas.GetLeft(top) - gameSpeed;
-
 			Canvas.SetLeft(top, left);
 			Canvas.SetLeft(bottom, left);
 
@@ -158,8 +138,9 @@ namespace FlappyBirdGame
 
 			if (left < -top.Width)
 			{
-				Canvas.SetLeft(top, 800);
-				Canvas.SetLeft(bottom, 800);
+				double maxX = Math.Max(Canvas.GetLeft(pipeTop1), Math.Max(Canvas.GetLeft(pipeTop2), Canvas.GetLeft(pipeTop3)));
+				Canvas.SetLeft(top, maxX + pipeSpacing);
+				Canvas.SetLeft(bottom, maxX + pipeSpacing);
 				top.Tag = null;
 			}
 		}
@@ -167,8 +148,8 @@ namespace FlappyBirdGame
 		private bool CheckCollision(Image pipe)
 		{
 			Rect birdRect = new Rect(Canvas.GetLeft(flappyBird) + 8, Canvas.GetTop(flappyBird) + 8, flappyBird.Width - 16, flappyBird.Height - 16);
-			double pipePaddingX = pipe.Width * 0.35;
-			Rect pipeRect = new Rect(Canvas.GetLeft(pipe) + pipePaddingX, Canvas.GetTop(pipe), pipe.Width - (pipePaddingX * 2), pipe.Height);
+			double pad = pipe.Width * 0.35;
+			Rect pipeRect = new Rect(Canvas.GetLeft(pipe) + pad, Canvas.GetTop(pipe), pipe.Width - pad * 2, pipe.Height);
 			return birdRect.IntersectsWith(pipeRect);
 		}
 
@@ -193,8 +174,6 @@ namespace FlappyBirdGame
 			gameTimer.Stop();
 			MyCanvas.Visibility = Visibility.Hidden;
 			MenuGrid.Visibility = Visibility.Visible;
-			restartButton.Visibility = Visibility.Hidden;
-			BackToMenuButton.Visibility = Visibility.Hidden;
 		}
 
 		private void KeyIsDown(object sender, KeyEventArgs e)
@@ -206,44 +185,11 @@ namespace FlappyBirdGame
 			}
 		}
 
-		private void StartRain()
-		{
-			if (rainDrops.Count > 0) return;
-			for (int i = 0; i < 100; i++)
-			{
-				Line drop = new Line();
-				drop.Stroke = Brushes.LightBlue;
-				drop.StrokeThickness = 2;
-				drop.X1 = rnd.NextDouble() * MyCanvas.ActualWidth;
-				drop.Y1 = rnd.NextDouble() * MyCanvas.ActualHeight;
-				drop.X2 = drop.X1;
-				drop.Y2 = drop.Y1 + 10;
-				Panel.SetZIndex(drop, 12);
-				MyCanvas.Children.Add(drop);
-				rainDrops.Add(drop);
-			}
-		}
-
-		private void AnimateRain()
-		{
-			if (rainDrops.Count == 0) return;
-			foreach (var drop in rainDrops)
-			{
-				drop.Y1 += 5;
-				drop.Y2 += 5;
-				if (drop.Y1 > MyCanvas.ActualHeight)
-				{
-					drop.Y1 = 0;
-					drop.Y2 = 10;
-					drop.X1 = rnd.NextDouble() * MyCanvas.ActualWidth;
-					drop.X2 = drop.X1;
-				}
-			}
-		}
-
 		private void UpdateHighScoreText()
 		{
 			highScoreText.Content = "Rekord: " + highScore;
 		}
+
+		private void StopRain() { foreach (var drop in rainDrops) MyCanvas.Children.Remove(drop); rainDrops.Clear(); }
 	}
 }
